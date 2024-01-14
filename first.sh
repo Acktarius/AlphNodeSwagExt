@@ -14,23 +14,27 @@ zeninfo() {
 zenity --info --timeout=12 --text="$@"
 }
 #Working directory
-wdir="/opt/AlphNodeSwagExt"
-cd $wdir
+#wdir="/opt/AlphNodeSwagExt"
+#cd $wdir
+#Tracker
+declare -i tracker=0
 #main
+while [[ tracker -ne 111 ]]; do
 #check APIkey
 if [[ -f APIkeygpg ]]; then
 zenwarn "API key encrypted file already exist, to delete it:\nsudo rm -f APIkeygpg'\n \
 and come back visit this script"
-
+tracker=1
 else	
-api=$(zenity --entry --title="Add API key" --text="Enter your API key (it will be store encrypted)"  width=700 --timeout=45)
+apiKey=$(zenity --entry --title="Add API key" --text="Enter your API key (it will be store encrypted)"  width=700 --timeout=45)
 case $? in
 	0)
 	echo $api
-	if [[  ${#api} -lt 32  ]]; then
+	if [[  ${#apiKey} -lt 32  ]]; then
 	zenwarn "expecting 32 characters" &
 	else
-	echo "$api" | gpg -c > APIkeygpg
+	echo "$apiKey" | gpg -c > APIkeygpg
+	tracker=1
 	fi
 	;;
 	1)
@@ -48,6 +52,7 @@ fi
 if [[ -f credentialsgpg ]]; then
 zenwarn "credentials encrypted file already exist, delete it with\n sudo rm -f credentialsgpg\n \
 and come back visit this script" 
+tracker=$(( $tracker + 10 ))
 else	
 account=$(zenity --forms  --title="Add Account" --timeout=45 --text="enter account Name and Password" \
 --add-entry="Account" \
@@ -62,25 +67,28 @@ case $? in
 	exit 
 	else
 	echo "username=$a&passwd=$p" | gpg -c > credentialsgpg
+	tracker=$(( $tracker + 10 ))
 	fi
 	;;
 	1)
 	echo "nothing done bye!" 
-	zenity --info --timeout=12 --text="nothing done bye!" &
+	zenity --info --timeout=12 --text="nothing done !" &
 	;;
 	*)
-	echo "something went wrong"
+	zenwarn "something went wrong"
 	;;
 esac
 fi
+
 #launch second?
 if [[ ! -f .data ]]; then
-if $(zenity --question --text="No IP address recorded for miner\nDo you want to set up one?"); then
-source second.sh
-else
-zenity --info --timeout=12 --text="Up to you, but you'll need one at some point" &
+	if (zenity --question --text="No IP address recorded for miner\nDo you want to set up one?"); then
+	source second.sh
+	tracker=$(( $tracker + 100 ))
+	else
+	zeninfo "Up to you, but you'll need one at some point"
+	fi
 fi
-fi
-
+done
 
 exit

@@ -4,6 +4,9 @@
 ##################################################################
 #  get API key and  credentials
 ##################################################################
+#Working directory
+#wdir="/opt/AlphNodeSwagExt"
+#cd $wdir
 #Declaratons
 bold=$(tput bold)
 normal=$(tput sgr0)
@@ -13,74 +16,44 @@ zenity --warning --timeout=12 --text="$@"
 zeninfo() {
 zenity --info --timeout=12 --text="$@"
 }
-#Working directory
-wdir="/opt/AlphNodeSwagExt"
-cd $wdir
-#main
-#check APIkey
-if [[ -f APIkeygpg ]]; then
-zenwarn "API key encrypted file already exist, to delete it:\nsudo rm -f APIkeygpg'\n \
-and come back visit this script"
-
+zenques() {
+	zenity --question --timeout=12 --text="$@"
+}
+zenerror() {
+	zenity --error --timeout=12 --text="$@"
+}
+#MAIN
+if [[ -f .data ]]; then
+	if (zenques "data file already exist.\nDo you want to delete it?"); then
+		rm -f .data
+		exit
+	fi
 else	
-api=$(zenity --entry --title="Add API key" --text="Enter your API key (it will be store encrypted)"  width=700 --timeout=45)
+value=$(zenity --entry \
+--title="Enter IP of the Node" \
+--text="IP Address" \
+--entry-text="xxx.yyy.z.w")
 case $? in
 	0)
-	echo $api
-	if [[  ${#api} -lt 32  ]]; then
-	zenwarn "expecting 32 characters" &
+	if [[ ! $value =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+	zenity --warning --text="IP format incorrect!" &
 	else
-	echo "$api" | gpg -c > APIkeygpg
+		if [[ $(echo "$(ping -c 2 -q $value | grep -c -E "(^| )0% packet loss")") -gt "0" ]]; then
+	zeninfo "IP format is correct and ping successful" &
+	echo "$value" > .data
+		else
+	zenerror "ping on this IP was not successful" &
+		fi
 	fi
 	;;
 	1)
 	zeninfo "nothing done bye!" &
-	exit
 	;;
 	*)
-	zenwarn "no answer received ...\ngoing to next step\nBut you'll have to enter it at some point"
+	zenerror "something went wrong" &
 	;;
 esac
 
 fi
-
-#check Credentials
-if [[ -f credentialsgpg ]]; then
-zenwarn "credentials encrypted file already exist, delete it with\n sudo rm -f credentialsgpg\n \
-and come back visit this script" 
-else	
-account=$(zenity --forms  --title="Add Account" --timeout=45 --text="enter account Name and Password" \
---add-entry="Account" \
---add-password="Password")
-case $? in
-	0)
-	echo $account
-	a=$(echo $account | cut -d "|" -f 1)
-	p=$(echo $account | cut -d "|" -f 2)
-	if ([[ -z $a ]] || [[ -z $p ]]); then
-	zenwarn "one or both of the entry is empty" &
-	exit 
-	else
-	echo "username=$a&passwd=$p" | gpg -c > credentialsgpg
-	fi
-	;;
-	1)
-	echo "nothing done bye!" 
-	zenity --info --timeout=12 --text="nothing done bye!" &
-	;;
-	*)
-	echo "something went wrong"
-	;;
-esac
-fi
-#launch second?
-if [[ ! -f .data ]]; then
-if $(zenity --question --text="No IP address recorded for miner\nDo you want to set up one?"); then
-source second.sh
-else
-zenity --info --timeout=12 --text="Up to you, but you'll need one at some point" &
-fi
-fi
-
 
 exit
