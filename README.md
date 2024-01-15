@@ -12,7 +12,7 @@ Huge thanks to [Bitbar](https://github.com/matryer/bitbar) and [@p-e-w](https://
 *(probably works on other Debian, not tested)*  
 
 ## Prerequisite
-Alephium Node running, with API key setup in user.info file,
+Alephium Node running, with API key setup in user.conf file,
 known wallet name, password and IP address. Sensitive data will be stored in an encrypted files. 
 
 ## Install
@@ -27,6 +27,8 @@ need to be able to toggle the **argos** extention :
 `sudo apt install -y zenity`
  * gpg  
 `sudo apt-get -y install gpg`
+ * jq
+`sudo apt install jq` 
 
 ### Argos extension :
 from [@p-e-w](https://github.com/p-e-w/argos) repository  
@@ -45,9 +47,9 @@ mv the downloaded directory to /opt
 change directory  
 `cd /opt/AlphNodeSwagExt`  
  * copy the extension script  
-`cp alphNodeStatExt.3r+.sh ~/.config/argos/alphNodeStatExt.3r+.sh`  
+`cp alphNodeStatExt.1r+.sh ~/.config/argos/alphNodeStatExt.1r+.sh`  
  * copy the icon
-`cp miner.svg ~/.icons/miner`     
+`cp Alephium-logo.svg ~/.icons/`     
  * make sure the scripts files are executable  
 `chmod 755 *.sh`
 
@@ -55,19 +57,19 @@ change directory
 1. Activate argos in extension (new icon on your launch pad)(just need to be done for first use)  
 2. within the extension, run    
    `./first.sh`  
-   (this is to store your credentials in an encrypted file, remember your new single use passphrase, you might need it sometimes)  
+   (this is to store your credentials in an encrypted file, remember your new single use passphrase, you might need it sometimes, or click autosave)  
 3. still within the extension, run
    `./second.sh`  
-   (if the option was declined at *first.sh* .This is to give the ip address of the node on your local network)   
+   (if the option was declined running *first.sh* .This is to give the ip address of the node on your local network)   
 ## Run  
 to test, run:  
 `./main.sh`   
-it runs for 2minutes, and then runs 2minutes every 30 minutes, the date in the extension turns <span color='#ff7f50'>orange</span> if it did not receive input for more than 1/2hour.   
-you can click on **Run Script** if you wnat to refresh. (no more need of the terminal).    
-*(now you may have to log out and come back to see the extension appear in your top bar.)*  
+it runs when click on the icon, the status will be orange if it took longer than 10s to fetch data.   
+    
+*(note you may have to log out and come back to see the extension appear in your top bar.)*  
   
 ---
   
 ## Contact
-https://discord.gg/tw3wWR3q  
+https://discord.gg/ZnMUUKUs
 

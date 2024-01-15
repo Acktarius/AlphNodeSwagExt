@@ -5,8 +5,8 @@
 #  get API key and  credentials
 ##################################################################
 #Working directory
-#wdir="/opt/AlphNodeSwagExt"
-#cd $wdir
+wdir="/opt/AlphNodeSwagExt"
+cd $wdir
 #Declaratons
 bold=$(tput bold)
 normal=$(tput sgr0)

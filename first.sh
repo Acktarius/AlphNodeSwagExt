@@ -14,8 +14,8 @@ zeninfo() {
 zenity --info --timeout=12 --text="$@"
 }
 #Working directory
-#wdir="/opt/AlphNodeSwagExt"
-#cd $wdir
+wdir=/opt/AlphNodeSwagExt
+cd $wdir
 #Tracker
 declare -i tracker=0
 #main
@@ -59,14 +59,13 @@ account=$(zenity --forms  --title="Add Account" --timeout=45 --text="enter accou
 --add-password="Password")
 case $? in
 	0)
-	echo $account
 	a=$(echo $account | cut -d "|" -f 1)
 	p=$(echo $account | cut -d "|" -f 2)
 	if ([[ -z $a ]] || [[ -z $p ]]); then
 	zenwarn "one or both of the entry is empty" &
 	exit 
 	else
-	echo "username=$a&passwd=$p" | gpg -c > credentialsgpg
+	echo "$a $p" | gpg -c > credentialsgpg
 	tracker=$(( $tracker + 10 ))
 	fi
 	;;
@@ -88,7 +87,10 @@ if [[ ! -f .data ]]; then
 	else
 	zeninfo "Up to you, but you'll need one at some point"
 	fi
+else
+tracker=$(( $tracker + 100 ))
 fi
+
 done
 
 exit

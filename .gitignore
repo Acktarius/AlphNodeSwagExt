@@ -1,5 +1,6 @@
 .data
 .pid
 .header.txt
-credentialsgpg
+cookies.txt
 APIkeygpg
+credentialsgpg
