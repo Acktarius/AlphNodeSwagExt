@@ -43,6 +43,8 @@ within terminal ~$  (Ctrl + Alt + T)
 mv the downloaded directory to /opt  
 `sudo mv /AlphNodeSwagExt /opt/`   
 
+*(if you git clone directly in /opt, you 'll have to change ownship : <sudo chown your_user_name:your_user_name -R AlphNodeSwagExt>)*   
+
 ## Install  
 change directory  
 `cd /opt/AlphNodeSwagExt`  
