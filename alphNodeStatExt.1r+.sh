@@ -10,7 +10,7 @@ wdir=/opt/AlphNodeSwagExt
 declare -a dataArray
 #functions
 color (){
-if [[ $1 -ge $2 ]]; then
+if [[ $(echo "$1 > $2" | bc -l ) = 1 ]]; then
 echo "#FF7F50"
 else
 echo "#1fc600"
@@ -49,9 +49,9 @@ delta=$(( $now - ${dataArray[0]}  ))
 echo "| iconName=Alephium-logo"
 echo "---"
 echo "Core version   <span color='#4d4dff'>${dataArray[1]}</span>"
-echo "Synced <span color='$(color $delta "10")'>${dataArray[2]}</span>"
-echo "Balance <span color='$(color ${dataArray[3]} "1")'>${dataArray[3]}</span> ALPH"
-echo "Locked Balance <span color='$(color ${dataArray[4]} "1")'>${dataArray[4]}</span> ALPH"
+echo "Synced <span color='$(color $delta 10)'>${dataArray[2]}</span>"
+echo "Balance <span color='$(color 1 ${dataArray[3]})'>${dataArray[3]}</span> ALPH"
+echo "Locked Balance <span color='$(color 1 ${dataArray[4]})'>${dataArray[4]}</span> ALPH"
 echo "---"
 echo "Launch Swagger <span color='#d4e157'>{...}</span> | bash=$wdir/sc/launchS.sh terminal=false"
 fi
