@@ -109,21 +109,20 @@ fi
 
 #Get Wallet Balance OUTPUT 3
 if [[ "${balanceBrut:(-3)}" == 200 ]]; then
-	b=$(echo "${balanceBrut:0:-3}" | jq .totalBalance)
-	echo ${b:1:-1}
+	b=$(echo "${balanceBrut:0:-3}" | jq .totalBalanceHint)
+	echo ${b:1:-5}
 else
 	echo "?"
 fi
-
 
 #Get Wallet Balance locked deposit OUTPUT 4
 if [[ "${balanceBrut:(-3)}" == 200 ]]; then
 i=0
 sumLocked=0
-	while [[ $(echo "${balanceBrut:0:-3}" | jq .balances | jq  .[$i].lockedBalance) != "null" ]]; do
-	z=$(echo "${balanceBrut:0:-3}" | jq .balances | jq  .[$i].lockedBalance)
-	g=${z:1:-1}
-	sumLocked=$(( $sumLocked + $g ))
+	while [[ $(echo "${balanceBrut:0:-3}" | jq .balances | jq  .[$i].lockedBalanceHint) != "null" ]]; do
+	z=$(echo "${balanceBrut:0:-3}" | jq .balances | jq  .[$i].lockedBalanceHint)
+	g=${z:1:-5}
+	sumLocked=$(echo $sumLocked+$g | bc )
 	i=$(( $i + 1 ))	
 	done
 	echo $sumLocked
